@@ -4,7 +4,9 @@ spawnQueryBrowserOn: aQuery withState: navigationBlock
 	targetQuery := aQuery.
 	aQuery isBoundToEnvironment ifFalse: [ 
 		targetQuery := aQuery withScope: self defaultNavigationScope].
-	
+	(targetQuery isExecutedFromScope: self systemScope) ifTrue: [ 
+		(self trySpawnFullBrowserInsteadOfQueryBrowserOn: aQuery)
+			ifTrue: [ ^self ]].
 	^self spawnBrowser: ClyQueryBrowser withState: [ :browser | 
 		browser queryScopes: self allNavigationScopes.
 		browser showResultOf: targetQuery.
