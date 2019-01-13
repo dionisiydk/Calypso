@@ -31,12 +31,22 @@ ClyGroupedVariablesTestCase >> createQuery [
 
 	| scope |
 	scope := ClyInstanceSideScope ofAll: {Object. Array. String} in: environment.
-	^ ClyAllClasses from: scope
+	^ ClyAllClassesQuery from: scope
 ]
 
 { #category : #helpers }
 ClyGroupedVariablesTestCase >> meaningfullObjectToAssert: aBrowserItem [
 	^aBrowserItem actualObject class
+]
+
+{ #category : #tests }
+ClyGroupedVariablesTestCase >> testComparisonWithAnotherClassScopeForMethods [
+
+	| queryResult2 |
+	queryResult2 := self createQueryResult. 
+	queryResult2 classScopeForMethods: (ClyClassScope of: Array).
+	
+	self deny: queryResult = queryResult2
 ]
 
 { #category : #tests }
