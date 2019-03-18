@@ -30,7 +30,7 @@ Class {
 		'extendingPackage',
 		'targetClasses'
 	],
-	#category : 'Calypso-SystemTools-Core-Editors-Methods'
+	#category : #'Calypso-SystemTools-Core-Editors-Methods'
 }
 
 { #category : #testing }
@@ -80,7 +80,7 @@ ClyMethodEditorToolMorph >> chooseClassForNewMethodIfNone: aBlock [
 
 	^[self browser searchDialog 
 			requestSingleObject: 'Where install new method?'
-			from: (ClyAllClasses as: ClyMethodVisibilityProvider defaultHierarchy asQueryResult) 
+			from: (ClyAllClassesQuery as: ClyMethodVisibilityProvider defaultHierarchy asQueryResult) 
 			inScope: (ClyClassScope ofAll: targetClasses)]
 		on: CmdCommandAborted do: [:err | aBlock value ]
 ]
@@ -225,5 +225,5 @@ ClyMethodEditorToolMorph >> toggleExtendingPackage [
 	extendingPackage ifNotNil: [ ^extendingPackage := nil ].
 	
 	extendingPackage := browser searchDialog 
-		requestSingleObject: 'Choose package for method' from: ClyAllPackages sorted
+		requestSingleObject: 'Choose package for method' from: ClyAllPackagesQuery sorted
 ]
