@@ -137,6 +137,11 @@ ClyFullBrowser class >> settingsGroupOn: aBuilder [
 		description: 'Settings related to the browser'
 ]
 
+{ #category : #icons }
+ClyFullBrowser class >> taskbarIconName [
+	^#smallSystemBrowser
+]
+
 { #category : #'world menu' }
 ClyFullBrowser class >> worldMenuOn: aBuilder [ 
 	<worldMenu> 
