@@ -43,27 +43,6 @@ ClyInheritanceAnalysisEnvironmentPlugin class >> isSlow [
 	^true
 ]
 
-{ #category : #'methods analysis' }
-ClyInheritanceAnalysisEnvironmentPlugin >> analysisCacheFor: aMethod do: aBlock [
-	
-	cacheGuard critical: [ 
-		methodCache at: aMethod selector ifPresent: [:classCache | 
-			classCache at: aMethod methodClass ifPresent: aBlock]
-	]
-]
-
-{ #category : #'methods analysis' }
-ClyInheritanceAnalysisEnvironmentPlugin >> analyzeMethod: aMethod [
-	| cache classCache |
-	cache := Array new: 2.
-	aMethod isOverriding ifTrue: [ cache at: 1 put: ClyOverridingMethodTag instance ].
-	aMethod isOverridden ifTrue: [ cache at: 2 put: ClyOverriddenMethodTag instance ].
-	
-	cacheGuard critical: [ 
-		classCache := methodCache at: aMethod selector ifAbsentPut: [WeakIdentityKeyDictionary new].
-		classCache at: aMethod methodClass put: cache]
-]
-
 { #category : #controlling }
 ClyInheritanceAnalysisEnvironmentPlugin >> attachToSystem [
 	super attachToSystem.
@@ -138,16 +117,6 @@ ClyInheritanceAnalysisEnvironmentPlugin >> detachFromSystem [
 	environment system unsubscribe: self.
 	
 	super detachFromSystem
-]
-
-{ #category : #'methods analysis' }
-ClyInheritanceAnalysisEnvironmentPlugin >> doesClassCache: classCache includesOverridesOf: aClass [
-
-	classCache keysDo: [ :eachClass | 
-		((eachClass includesBehavior: aClass) or: [ aClass includesBehavior: eachClass ])
-			ifTrue: [ ^true ]].
-		
-	^false
 ]
 
 { #category : #'implementors cache' }
@@ -284,27 +253,6 @@ ClyInheritanceAnalysisEnvironmentPlugin >> removeMethodFromCache: aMethod [
 	(classes isEmpty or: [ 
 		classes allSatisfy: [:each | each isNil or: [ each isObsolete ] ]])
 			ifTrue: [allImplementorsCache removeKey: aMethod selector]
-]
-
-{ #category : #'methods analysis' }
-ClyInheritanceAnalysisEnvironmentPlugin >> resetCacheOfClass: aClass [
-	aClass ifNil: [ ^self ].
-	
-	cacheGuard critical: [ | selectorsToRemove |
-		selectorsToRemove := OrderedCollection new.
-		methodCache keysAndValuesDo: [ :selector :classCache |
-			(self doesClassCache: classCache includesOverridesOf: aClass)
-					ifTrue: [ selectorsToRemove add: selector ]].
-		selectorsToRemove do: [:each | methodCache removeKey: each]
-	]
-]
-
-{ #category : #'methods analysis' }
-ClyInheritanceAnalysisEnvironmentPlugin >> resetCacheOfMethod: aMethod [
-	
-	cacheGuard critical: [
-		methodCache removeKey: aMethod selector ifAbsent: [  ]
-	]
 ]
 
 { #category : #'implementors cache' }
