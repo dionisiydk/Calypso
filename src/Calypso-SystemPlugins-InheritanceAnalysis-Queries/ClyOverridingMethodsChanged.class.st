@@ -6,8 +6,18 @@ So I modify default MethodAnnouncement processing logic to affect overriding met
 Class {
 	#name : #ClyOverridingMethodsChanged,
 	#superclass : #MethodAnnouncement,
+	#instVars : [
+		'announcerPlugin'
+	],
 	#category : #'Calypso-SystemPlugins-InheritanceAnalysis-Queries'
 }
+
+{ #category : #'instance creation' }
+ClyOverridingMethodsChanged class >> initiatedBy: anInheritenceAnalysisPlugin forOverriddenMethod: aMethod [
+	^self new 
+		method: aMethod;
+		announcerPlugin: anInheritenceAnalysisPlugin
+]
 
 { #category : #'instance creation' }
 ClyOverridingMethodsChanged class >> overriddenMethod: aMethod [
@@ -37,7 +47,17 @@ ClyOverridingMethodsChanged >> affectsMethodsDefinedInPackage: aPackage [
 { #category : #testing }
 ClyOverridingMethodsChanged >> affectsMethodsTaggedWith: tagName [
 
-	^method isOverridden
+	^announcerPlugin isMethodOverridden: method
+]
+
+{ #category : #accessing }
+ClyOverridingMethodsChanged >> announcerPlugin [
+	^ announcerPlugin
+]
+
+{ #category : #accessing }
+ClyOverridingMethodsChanged >> announcerPlugin: anObject [
+	announcerPlugin := anObject
 ]
 
 { #category : #accessing }
